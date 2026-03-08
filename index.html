@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Republic AI — Points Tracker</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0a0a0f;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      color: #64748b;
+      margin-top: 6px;
+      font-size: 0.9rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #1a1a2e;
+      border: 1px solid #2d2d4e;
+      color: #818cf8;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .search-box {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    input {
+      flex: 1;
+      background: #111827;
+      border: 1px solid #1f2937;
+      color: #e2e8f0;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input::placeholder { color: #4b5563; }
+    input { font-size: 0.85rem; }
+    input:focus { border-color: #6366f1; }
+
+    button {
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    button:hover { background: #4f46e5; }
+    button:disabled { background: #374151; cursor: not-allowed; }
+
+    .container {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 14px;
+      padding: 20px 24px;
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .card-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .card-sub {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .points-card {
+      background: linear-gradient(135deg, #1e1b4b, #1a1a2e);
+      border-color: #3730a3;
+    }
+
+    .points-card .card-value {
+      color: #a5b4fc;
+      font-size: 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .tx-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .tx-item {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+    }
+
+    .tx-hash {
+      color: #818cf8;
+      font-family: monospace;
+    }
+
+    .tx-value {
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    .tx-block {
+      color: #6b7280;
+      font-size: 0.75rem;
+    }
+
+    .error {
+      background: #1c0a0a;
+      border: 1px solid #7f1d1d;
+      color: #fca5a5;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #4f46e5;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      color: #6b7280;
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .network-bar {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 10px 18px;
+      margin-bottom: 24px;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    .net-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #6b7280;
+      margin-right: 6px;
+    }
+
+    .net-dot.online { background: #34d399; box-shadow: 0 0 6px #34d399; }
+
+    .address-short {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 6px;
+    }
+
+    .points-breakdown {
+      margin-top: 12px;
+      font-size: 0.78rem;
+      color: #6b7280;
+      border-top: 1px solid #2d2d4e;
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .breakdown-row span:last-child { color: #a5b4fc; }
+
+    footer {
+      margin-top: 48px;
+      color: #374151;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+
+    footer a { color: #4b5563; text-decoration: none; }
+    footer a:hover { color: #6b7280; }
+
+    #results { display: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge">Testnet</div>
+    <h1>Republic AI Points Tracker</h1>
+    <p>Cüzdan adresinizi girerek puan durumunuzu görün</p>
+  </header>
+
+  <div class="network-bar" id="networkBar">
+    <span><span class="net-dot" id="netDot"></span><span id="netStatus">Bağlanıyor...</span></span>
+    <span id="latestBlock">—</span>
+  </div>
+
+  <div class="search-box">
+    <input
+      type="text"
+      id="addressInput"
+      placeholder="republic1... veya 0x... adresinizi girin"
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <button id="searchBtn" onclick="search()">Sorgula</button>
+  </div>
+
+  <div class="container" id="results">
+    <div id="output"></div>
+  </div>
+
+  <footer>
+    <p>Republic AI Testnet &mdash; Chain ID: 77701 &mdash; <a href="https://explorer.republicai.io" target="_blank">Block Explorer</a></p>
+  </footer>
+
+<script>
+  const RPC = 'https://evm-rpc.republicai.io';
+  const EXPLORER = 'https://explorer.republicai.io';
+
+  // ── Bech32 → EVM dönüştürücü ──────────────────────────────────────────
+  const B32_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+
+  function _polymod(values) {
+    const GEN = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
+    let chk = 1;
+    for (const v of values) {
+      const b = chk >> 25;
+      chk = ((chk & 0x1ffffff) << 5) ^ v;
+      for (let i = 0; i < 5; i++) { if ((b >> i) & 1) chk ^= GEN[i]; }
+    }
+    return chk;
+  }
+
+  function _hrpExpand(hrp) {
+    const r = [];
+    for (let i = 0; i < hrp.length; i++) r.push(hrp.charCodeAt(i) >> 5);
+    r.push(0);
+    for (let i = 0; i < hrp.length; i++) r.push(hrp.charCodeAt(i) & 31);
+    return r;
+  }
+
+  function _convertbits(data, from, to) {
+    let acc = 0, bits = 0;
+    const ret = [], maxv = (1 << to) - 1;
+    for (const v of data) {
+      acc = (acc << from) | v; bits += from;
+      while (bits >= to) { bits -= to; ret.push((acc >> bits) & maxv); }
+    }
+    return ret;
+  }
+
+  function bech32ToEVM(addr) {
+    const lower = addr.toLowerCase();
+    const pos = lower.lastIndexOf('1');
+    if (pos < 1) return null;
+    const hrp = lower.slice(0, pos);
+    const data = [];
+    for (let i = pos + 1; i < lower.length; i++) {
+      const d = B32_CHARSET.indexOf(lower[i]);
+      if (d < 0) return null;
+      data.push(d);
+    }
+    if (_polymod(_hrpExpand(hrp).concat(data)) !== 1) return null;
+    const bytes = _convertbits(data.slice(0, -6), 5, 8);
+    if (!bytes || bytes.length !== 20) return null;
+    return '0x' + bytes.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  // ─────────────────────────────────────────────────────────────────────
+
+  async function rpc(method, params = []) {
+    const res = await fetch(RPC, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    return data.result;
+  }
+
+  function hexToDecimal(hex) {
+    return parseInt(hex, 16);
+  }
+
+  function formatRAI(weiHex) {
+    const wei = BigInt(weiHex);
+    const rai = Number(wei) / 1e18;
+    return rai.toLocaleString('tr-TR', { maximumFractionDigits: 4 });
+  }
+
+  function shortAddr(addr) {
+    return addr.slice(0, 6) + '...' + addr.slice(-4);
+  }
+
+  function calcPoints(txCount, balanceHex) {
+    const balance = Number(BigInt(balanceHex)) / 1e18;
+    const fromTx = txCount * 150;
+    const fromBalance = Math.min(balance * 5, 5000);
+    const total = Math.round(fromTx + fromBalance);
+    return { total, fromTx, fromBalance: Math.round(fromBalance) };
+  }
+
+  async function initNetwork() {
+    try {
+      const block = await rpc('eth_blockNumber');
+      const blockNum = hexToDecimal(block);
+      document.getElementById('netDot').className = 'net-dot online';
+      document.getElementById('netStatus').textContent = 'Testnet — Bağlı';
+      document.getElementById('latestBlock').textContent = `Blok #${blockNum.toLocaleString()}`;
+    } catch {
+      document.getElementById('netStatus').textContent = 'Bağlantı hatası';
+    }
+  }
+
+  async function search() {
+    const raw = document.getElementById('addressInput').value.trim();
+    const output = document.getElementById('output');
+    const results = document.getElementById('results');
+    const btn = document.getElementById('searchBtn');
+
+    if (!raw) return;
+
+    // Adres tespiti: EVM (0x...) veya Cosmos bech32 (republic1...)
+    let input = raw;
+    let displayAddr = raw;
+
+    if (/^0x[0-9a-fA-F]{40}$/.test(raw)) {
+      // EVM adresi — doğrudan kullan
+    } else if (/^republic1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{38,}$/i.test(raw)) {
+      // Cosmos bech32 → EVM dönüştür
+      const evmAddr = bech32ToEVM(raw);
+      if (!evmAddr) {
+        results.style.display = 'block';
+        output.innerHTML = `<div class="error">Adres dönüştürülemedi. Lütfen geçerli bir republic1... adresi girin.</div>`;
+        return;
+      }
+      input = evmAddr;
+    } else {
+      results.style.display = 'block';
+      output.innerHTML = `<div class="error">Geçersiz adres. <b>republic1...</b> (Keplr) veya <b>0x...</b> (EVM) formatında girin.</div>`;
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Sorgulanıyor...';
+    results.style.display = 'block';
+    output.innerHTML = `<div class="loading-text"><span class="spinner"></span>Veriler yükleniyor...</div>`;
+
+    try {
+      const [balanceHex, txCountHex, blockHex] = await Promise.all([
+        rpc('eth_getBalance', [input, 'latest']),
+        rpc('eth_getTransactionCount', [input, 'latest']),
+        rpc('eth_blockNumber')
+      ]);
+
+      const txCount = hexToDecimal(txCountHex);
+      const points = calcPoints(txCount, balanceHex);
+      const latestBlock = hexToDecimal(blockHex);
+
+      output.innerHTML = `
+        <div class="card points-card">
+          <div class="card-label">Tahmini Puan</div>
+          <div class="card-value">${points.total.toLocaleString()}</div>
+          <div class="address-short">${shortAddr(displayAddr)}</div>
+          <div class="points-breakdown">
+            <div class="breakdown-row"><span>İşlem puanı (${txCount} tx × 150)</span><span>+${points.fromTx.toLocaleString()}</span></div>
+            <div class="breakdown-row"><span>Bakiye puanı</span><span>+${points.fromBalance.toLocaleString()}</span></div>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <div class="card-label">RAI Bakiye</div>
+            <div class="card-value" style="font-size:1.3rem">${formatRAI(balanceHex)}</div>
+            <div class="card-sub">RAI</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Gönderilen TX</div>
+            <div class="card-value" style="font-size:1.3rem">${txCount.toLocaleString()}</div>
+            <div class="card-sub">işlem</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Detaylar</div>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px; font-size:0.85rem; color:#94a3b8">
+            <div style="display:flex; justify-content:space-between">
+              <span>Sorgu Bloğu</span>
+              <span style="color:#e2e8f0">#${latestBlock.toLocaleString()}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between">
+              <span>Adres</span>
+              <span style="color:#818cf8; font-family:monospace; font-size:0.78rem">${shortAddr(displayAddr)}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between">
+              <span>Network</span>
+              <span style="color:#e2e8f0">Republic Testnet (77701)</span>
+            </div>
+          </div>
+          <div style="margin-top:14px; padding-top:12px; border-top:1px solid #1f2937;">
+            <a href="${EXPLORER}/address/${input}" target="_blank"
+               style="color:#6366f1; font-size:0.82rem; text-decoration:none;">
+              → Block Explorer'da Görüntüle
+            </a>
+          </div>
+        </div>
+
+        <div class="card" style="font-size:0.78rem; color:#4b5563; line-height:1.6">
+          ⚠️ Puan hesabı tahminidir. Republic'in resmi puan programı henüz aktif olmadığından,
+          bu değerler işlem sayısı ve bakiye baz alınarak hesaplanmıştır. Gerçek puanlar farklı olabilir.
+        </div>
+      `;
+    } catch (err) {
+      output.innerHTML = `<div class="error">Hata: ${err.message}</div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Sorgula';
+    }
+  }
+
+  document.getElementById('addressInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') search();
+  });
+
+  initNetwork();
+</script>
+</body>
+</html>
