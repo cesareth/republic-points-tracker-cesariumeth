@@ -47,6 +47,39 @@
       margin-bottom: 12px;
     }
 
+    .tabs {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 9px;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 9px;
+      cursor: pointer;
+      color: #6b7280;
+      transition: all 0.2s;
+      border: none;
+      background: transparent;
+    }
+
+    .tab.active {
+      background: #1e1b4b;
+      color: #a5b4fc;
+    }
+
+    .tab:hover:not(.active) { color: #e2e8f0; }
+
     .search-box {
       width: 100%;
       max-width: 560px;
@@ -62,13 +95,12 @@
       color: #e2e8f0;
       padding: 12px 16px;
       border-radius: 10px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       outline: none;
       transition: border-color 0.2s;
     }
 
     input::placeholder { color: #4b5563; }
-    input { font-size: 0.85rem; }
     input:focus { border-color: #6366f1; }
 
     button {
@@ -136,39 +168,6 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
-    }
-
-    .tx-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .tx-item {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 8px;
-      padding: 10px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.82rem;
-    }
-
-    .tx-hash {
-      color: #818cf8;
-      font-family: monospace;
-    }
-
-    .tx-value {
-      color: #34d399;
-      font-weight: 600;
-    }
-
-    .tx-block {
-      color: #6b7280;
-      font-size: 0.75rem;
     }
 
     .error {
@@ -252,6 +251,89 @@
 
     .breakdown-row span:last-child { color: #a5b4fc; }
 
+    /* Leaderboard */
+    .lb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .lb-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .lb-refresh {
+      background: transparent;
+      border: 1px solid #1f2937;
+      color: #6b7280;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      border-radius: 8px;
+    }
+
+    .lb-refresh:hover { border-color: #6366f1; color: #a5b4fc; background: transparent; }
+
+    .lb-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #1f2937;
+    }
+
+    .lb-row:last-child { border-bottom: none; }
+
+    .lb-rank {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      background: #1f2937;
+      color: #6b7280;
+    }
+
+    .lb-rank.gold   { background: #78350f; color: #fbbf24; }
+    .lb-rank.silver { background: #1e293b; color: #94a3b8; }
+    .lb-rank.bronze { background: #1c1008; color: #b45309; }
+
+    .lb-addr {
+      flex: 1;
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .lb-points {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #a5b4fc;
+      white-space: nowrap;
+    }
+
+    .lb-sub {
+      font-size: 0.72rem;
+      color: #4b5563;
+      margin-top: 2px;
+    }
+
+    .lb-empty {
+      text-align: center;
+      color: #4b5563;
+      font-size: 0.85rem;
+      padding: 32px 0;
+    }
+
     footer {
       margin-top: 48px;
       color: #374151;
@@ -263,6 +345,7 @@
     footer a:hover { color: #6b7280; }
 
     #results { display: none; }
+    #lbSection { display: none; }
   </style>
 </head>
 <body>
@@ -278,19 +361,37 @@
     <span id="latestBlock">—</span>
   </div>
 
-  <div class="search-box">
-    <input
-      type="text"
-      id="addressInput"
-      placeholder="rai1... adresinizi girin"
-      autocomplete="off"
-      spellcheck="false"
-    />
-    <button id="searchBtn" onclick="search()">Sorgula</button>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('tracker')">Puan Sorgula</button>
+    <button class="tab" onclick="showTab('leaderboard')">Leaderboard</button>
   </div>
 
-  <div class="container" id="results">
-    <div id="output"></div>
+  <!-- Tracker -->
+  <div id="trackerSection" style="width:100%;max-width:560px;">
+    <div class="search-box">
+      <input
+        type="text"
+        id="addressInput"
+        placeholder="rai1... adresinizi girin"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button id="searchBtn" onclick="search()">Sorgula</button>
+    </div>
+    <div class="container" id="results">
+      <div id="output"></div>
+    </div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div id="lbSection" style="width:100%;max-width:560px;">
+    <div class="card">
+      <div class="lb-header">
+        <span class="lb-title">Top Cüzdanlar</span>
+        <button class="lb-refresh" onclick="loadLeaderboard()">↻ Yenile</button>
+      </div>
+      <div id="lbContent"><div class="lb-empty"><span class="spinner"></span></div></div>
+    </div>
   </div>
 
   <footer>
@@ -298,10 +399,12 @@
   </footer>
 
 <script>
-  const RPC = 'https://evm-rpc.republicai.io';
+  const RPC      = 'https://evm-rpc.republicai.io';
   const EXPLORER = 'https://explorer.republicai.io';
+  const BIN_ID   = '69add61743b1c97be9c20ba1';
+  const BIN_KEY  = '$2a$10$dBszwq.mps5ykM8zOV4AsOsMTGAQiZQu9n12SxuHCOfoWpRc5/v16';
 
-  // ── Bech32 → EVM dönüştürücü ──────────────────────────────────────────
+  // ── Bech32 → EVM ──────────────────────────────────────────────────────
   const B32_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 
   function _polymod(values) {
@@ -351,6 +454,73 @@
   }
   // ─────────────────────────────────────────────────────────────────────
 
+  // ── JSONBin leaderboard ───────────────────────────────────────────────
+  async function lbGet() {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': BIN_KEY }
+    });
+    const json = await res.json();
+    return json.record.leaderboard || [];
+  }
+
+  async function lbSave(list) {
+    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': BIN_KEY },
+      body: JSON.stringify({ leaderboard: list })
+    });
+  }
+
+  async function lbUpsert(raiAddr, points, txCount, balance) {
+    try {
+      const list = await lbGet();
+      const idx = list.findIndex(e => e.addr === raiAddr);
+      const entry = { addr: raiAddr, points, txCount, balance, updatedAt: Date.now() };
+      if (idx >= 0) list[idx] = entry; else list.push(entry);
+      list.sort((a, b) => b.points - a.points);
+      await lbSave(list.slice(0, 100)); // max 100 kayıt
+    } catch { /* leaderboard hatası sorguyu engellemesin */ }
+  }
+
+  async function loadLeaderboard() {
+    const el = document.getElementById('lbContent');
+    el.innerHTML = `<div class="lb-empty"><span class="spinner"></span></div>`;
+    try {
+      const list = await lbGet();
+      if (!list.length) {
+        el.innerHTML = `<div class="lb-empty">Henüz kayıt yok. İlk sorgulayan sen ol!</div>`;
+        return;
+      }
+      el.innerHTML = list.map((e, i) => {
+        const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1;
+        return `
+          <div class="lb-row">
+            <div class="lb-rank ${rankClass}">${medal}</div>
+            <div style="flex:1;overflow:hidden">
+              <div class="lb-addr">${e.addr}</div>
+              <div class="lb-sub">${e.txCount} tx · ${Number(e.balance).toLocaleString('tr-TR',{maximumFractionDigits:2})} RAI</div>
+            </div>
+            <div style="text-align:right">
+              <div class="lb-points">${e.points.toLocaleString()} puan</div>
+            </div>
+          </div>`;
+      }).join('');
+    } catch {
+      el.innerHTML = `<div class="lb-empty">Leaderboard yüklenemedi.</div>`;
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────
+
+  function showTab(tab) {
+    document.getElementById('trackerSection').style.display = tab === 'tracker' ? 'block' : 'none';
+    document.getElementById('lbSection').style.display      = tab === 'leaderboard' ? 'block' : 'none';
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', (i === 0 && tab === 'tracker') || (i === 1 && tab === 'leaderboard'));
+    });
+    if (tab === 'leaderboard') loadLeaderboard();
+  }
+
   async function rpc(method, params = []) {
     const res = await fetch(RPC, {
       method: 'POST',
@@ -362,35 +532,29 @@
     return data.result;
   }
 
-  function hexToDecimal(hex) {
-    return parseInt(hex, 16);
-  }
+  function hexToDecimal(hex) { return parseInt(hex, 16); }
 
   function formatRAI(weiHex) {
-    const wei = BigInt(weiHex);
-    const rai = Number(wei) / 1e18;
+    const rai = Number(BigInt(weiHex)) / 1e18;
     return rai.toLocaleString('tr-TR', { maximumFractionDigits: 4 });
   }
 
-  function shortAddr(addr) {
-    return addr.slice(0, 6) + '...' + addr.slice(-4);
-  }
+  function shortAddr(addr) { return addr.slice(0, 8) + '...' + addr.slice(-4); }
 
   function calcPoints(txCount, balanceHex) {
     const balance = Number(BigInt(balanceHex)) / 1e18;
     const fromTx = txCount * 150;
     const fromBalance = Math.min(balance * 5, 5000);
     const total = Math.round(fromTx + fromBalance);
-    return { total, fromTx, fromBalance: Math.round(fromBalance) };
+    return { total, fromTx, fromBalance: Math.round(fromBalance), balance };
   }
 
   async function initNetwork() {
     try {
       const block = await rpc('eth_blockNumber');
-      const blockNum = hexToDecimal(block);
       document.getElementById('netDot').className = 'net-dot online';
       document.getElementById('netStatus').textContent = 'Testnet — Bağlı';
-      document.getElementById('latestBlock').textContent = `Blok #${blockNum.toLocaleString()}`;
+      document.getElementById('latestBlock').textContent = `Blok #${hexToDecimal(block).toLocaleString()}`;
     } catch {
       document.getElementById('netStatus').textContent = 'Bağlantı hatası';
     }
@@ -404,18 +568,15 @@
 
     if (!raw) return;
 
-    // Adres tespiti: rai1... bech32
-    let input = raw;
-    let displayAddr = raw;
+    let evmAddr, displayAddr = raw;
 
     if (/^rai1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]+$/i.test(raw)) {
-      const evmAddr = bech32ToEVM(raw);
+      evmAddr = bech32ToEVM(raw);
       if (!evmAddr) {
         results.style.display = 'block';
         output.innerHTML = `<div class="error">Adres dönüştürülemedi. Lütfen geçerli bir rai1... adresi girin.</div>`;
         return;
       }
-      input = evmAddr;
     } else {
       results.style.display = 'block';
       output.innerHTML = `<div class="error">Geçersiz adres. <b>rai1...</b> formatında Keplr adresinizi girin.</div>`;
@@ -429,14 +590,17 @@
 
     try {
       const [balanceHex, txCountHex, blockHex] = await Promise.all([
-        rpc('eth_getBalance', [input, 'latest']),
-        rpc('eth_getTransactionCount', [input, 'latest']),
+        rpc('eth_getBalance', [evmAddr, 'latest']),
+        rpc('eth_getTransactionCount', [evmAddr, 'latest']),
         rpc('eth_blockNumber')
       ]);
 
-      const txCount = hexToDecimal(txCountHex);
-      const points = calcPoints(txCount, balanceHex);
+      const txCount   = hexToDecimal(txCountHex);
+      const points    = calcPoints(txCount, balanceHex);
       const latestBlock = hexToDecimal(blockHex);
+
+      // Leaderboard'a kaydet (arka planda)
+      lbUpsert(raw, points.total, txCount, points.balance);
 
       output.innerHTML = `
         <div class="card points-card">
@@ -479,7 +643,7 @@
             </div>
           </div>
           <div style="margin-top:14px; padding-top:12px; border-top:1px solid #1f2937;">
-            <a href="${EXPLORER}/address/${input}" target="_blank"
+            <a href="${EXPLORER}/address/${evmAddr}" target="_blank"
                style="color:#6366f1; font-size:0.82rem; text-decoration:none;">
               → Block Explorer'da Görüntüle
             </a>
@@ -504,6 +668,7 @@
   });
 
   initNetwork();
+  showTab('tracker');
 </script>
 </body>
 </html>

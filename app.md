@@ -13,9 +13,10 @@ Republic AI testnet üzerinde cüzdan adresi sorgulayan, RAI bakiyesi ve tahmini
 - **EVM RPC:** https://evm-rpc.republicai.io
 - **Chain ID:** 77701 (Republic Testnet)
 - **Block Explorer:** https://explorer.republicai.io
+- **Adres Formatı:** `rai1...` (Keplr/Cosmos bech32) — otomatik olarak EVM hex'e dönüştürülür
 
 ## Özellikler
-- 0x cüzdan adresi girişi
+- `rai1...` Keplr cüzdan adresi girişi (bech32 → EVM otomatik dönüşüm)
 - RAI bakiyesi gösterimi
 - Gönderilen TX sayısı
 - Tahmini puan hesabı: `(tx × 150) + (bakiye × 5)`
@@ -28,17 +29,26 @@ Republic AI testnet üzerinde cüzdan adresi sorgulayan, RAI bakiyesi ve tahmini
 - Toplam = ikisinin toplamı
 
 ## Deploy
-- Platform: Netlify
-- Yöntem: `netlify deploy --prod --dir .`
-- Komutlar:
+- **Platform:** Netlify
+- **Canlı URL:** https://republic-points-tracker-cesariumeth.netlify.app
+- **Komut:**
   ```bash
-  npm install -g netlify-cli
   cd /root/republic-points-tracker
   netlify deploy --prod --dir .
   ```
 
+## GitHub
+- **Repo:** https://github.com/cesareth/republic-points-tracker-cesariumeth
+- **Hesap:** cesareth
+- **Push komutu:**
+  ```bash
+  git add . && git commit -m "mesaj" && git push origin master
+  ```
+
 ## Yapılacaklar / Geliştirme Fikirleri
-- [ ] Netlify'a deploy et, canlı URL al
+- [x] Netlify'a deploy edildi
+- [x] rai1... Keplr adresi desteği eklendi (bech32 → EVM dönüşüm)
+- [x] GitHub'a yüklendi
 - [ ] Republic resmi puan programı açıklandığında formülü güncelle
 - [ ] Leaderboard ekle
 - [ ] Birden fazla cüzdan karşılaştırma
