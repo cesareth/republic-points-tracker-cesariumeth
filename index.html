@@ -282,7 +282,7 @@
     <input
       type="text"
       id="addressInput"
-      placeholder="republic1... veya 0x... adresinizi girin"
+      placeholder="rai1... adresinizi girin"
       autocomplete="off"
       spellcheck="false"
     />
@@ -404,24 +404,21 @@
 
     if (!raw) return;
 
-    // Adres tespiti: EVM (0x...) veya Cosmos bech32 (republic1...)
+    // Adres tespiti: rai1... bech32
     let input = raw;
     let displayAddr = raw;
 
-    if (/^0x[0-9a-fA-F]{40}$/.test(raw)) {
-      // EVM adresi — doğrudan kullan
-    } else if (/^republic1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{38,}$/i.test(raw)) {
-      // Cosmos bech32 → EVM dönüştür
+    if (/^rai1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]+$/i.test(raw)) {
       const evmAddr = bech32ToEVM(raw);
       if (!evmAddr) {
         results.style.display = 'block';
-        output.innerHTML = `<div class="error">Adres dönüştürülemedi. Lütfen geçerli bir republic1... adresi girin.</div>`;
+        output.innerHTML = `<div class="error">Adres dönüştürülemedi. Lütfen geçerli bir rai1... adresi girin.</div>`;
         return;
       }
       input = evmAddr;
     } else {
       results.style.display = 'block';
-      output.innerHTML = `<div class="error">Geçersiz adres. <b>republic1...</b> (Keplr) veya <b>0x...</b> (EVM) formatında girin.</div>`;
+      output.innerHTML = `<div class="error">Geçersiz adres. <b>rai1...</b> formatında Keplr adresinizi girin.</div>`;
       return;
     }
 
