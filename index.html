@@ -9,7 +9,7 @@
 
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #0a0a0f;
+      background: #030a05;
       color: #e2e8f0;
       min-height: 100vh;
       display: flex;
@@ -38,9 +38,9 @@
 
     .badge {
       display: inline-block;
-      background: #1a1a2e;
-      border: 1px solid #2d2d4e;
-      color: #818cf8;
+      background: #0a1f0e;
+      border: 1px solid #166534;
+      color: #4ade80;
       font-size: 0.75rem;
       padding: 3px 10px;
       border-radius: 999px;
@@ -53,8 +53,8 @@
       display: flex;
       gap: 4px;
       margin-bottom: 24px;
-      background: #111827;
-      border: 1px solid #1f2937;
+      background: #0a1a0d;
+      border: 1px solid #14532d;
       border-radius: 12px;
       padding: 4px;
     }
@@ -74,8 +74,8 @@
     }
 
     .tab.active {
-      background: #1e1b4b;
-      color: #a5b4fc;
+      background: #14532d;
+      color: #4ade80;
     }
 
     .tab:hover:not(.active) { color: #e2e8f0; }
@@ -90,8 +90,8 @@
 
     input {
       flex: 1;
-      background: #111827;
-      border: 1px solid #1f2937;
+      background: #0a1a0d;
+      border: 1px solid #14532d;
       color: #e2e8f0;
       padding: 12px 16px;
       border-radius: 10px;
@@ -101,10 +101,10 @@
     }
 
     input::placeholder { color: #4b5563; }
-    input:focus { border-color: #6366f1; }
+    input:focus { border-color: #16a34a; }
 
     button {
-      background: #6366f1;
+      background: #16a34a;
       color: #fff;
       border: none;
       padding: 12px 22px;
@@ -116,7 +116,7 @@
       white-space: nowrap;
     }
 
-    button:hover { background: #4f46e5; }
+    button:hover { background: #15803d; }
     button:disabled { background: #374151; cursor: not-allowed; }
 
     .container {
@@ -128,8 +128,8 @@
     }
 
     .card {
-      background: #111827;
-      border: 1px solid #1f2937;
+      background: #0a1a0d;
+      border: 1px solid #14532d;
       border-radius: 14px;
       padding: 20px 24px;
     }
@@ -155,12 +155,12 @@
     }
 
     .points-card {
-      background: linear-gradient(135deg, #1e1b4b, #1a1a2e);
-      border-color: #3730a3;
+      background: linear-gradient(135deg, #052e16, #0a1a0d);
+      border-color: #166534;
     }
 
     .points-card .card-value {
-      color: #a5b4fc;
+      color: #4ade80;
       font-size: 2rem;
     }
 
@@ -183,7 +183,7 @@
       display: inline-block;
       width: 16px;
       height: 16px;
-      border: 2px solid #4f46e5;
+      border: 2px solid #16a34a;
       border-top-color: transparent;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
@@ -206,8 +206,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #111827;
-      border: 1px solid #1f2937;
+      background: #0a1a0d;
+      border: 1px solid #14532d;
       border-radius: 10px;
       padding: 10px 18px;
       margin-bottom: 24px;
@@ -237,7 +237,7 @@
       margin-top: 12px;
       font-size: 0.78rem;
       color: #6b7280;
-      border-top: 1px solid #2d2d4e;
+      border-top: 1px solid #166534;
       padding-top: 10px;
       display: flex;
       flex-direction: column;
@@ -249,7 +249,7 @@
       justify-content: space-between;
     }
 
-    .breakdown-row span:last-child { color: #a5b4fc; }
+    .breakdown-row span:last-child { color: #4ade80; }
 
     /* Leaderboard */
     .lb-header {
@@ -267,21 +267,21 @@
 
     .lb-refresh {
       background: transparent;
-      border: 1px solid #1f2937;
+      border: 1px solid #14532d;
       color: #6b7280;
       padding: 6px 12px;
       font-size: 0.78rem;
       border-radius: 8px;
     }
 
-    .lb-refresh:hover { border-color: #6366f1; color: #a5b4fc; background: transparent; }
+    .lb-refresh:hover { border-color: #16a34a; color: #4ade80; background: transparent; }
 
     .lb-row {
       display: flex;
       align-items: center;
       gap: 12px;
       padding: 12px 0;
-      border-bottom: 1px solid #1f2937;
+      border-bottom: 1px solid #14532d;
     }
 
     .lb-row:last-child { border-bottom: none; }
@@ -296,7 +296,7 @@
       font-size: 0.78rem;
       font-weight: 700;
       flex-shrink: 0;
-      background: #1f2937;
+      background: #052e16;
       color: #6b7280;
     }
 
@@ -317,7 +317,7 @@
     .lb-points {
       font-weight: 700;
       font-size: 0.92rem;
-      color: #a5b4fc;
+      color: #4ade80;
       white-space: nowrap;
     }
 
@@ -635,16 +635,16 @@
             </div>
             <div style="display:flex; justify-content:space-between">
               <span>Adres</span>
-              <span style="color:#818cf8; font-family:monospace; font-size:0.78rem">${shortAddr(displayAddr)}</span>
+              <span style="color:#4ade80; font-family:monospace; font-size:0.78rem">${shortAddr(displayAddr)}</span>
             </div>
             <div style="display:flex; justify-content:space-between">
               <span>Network</span>
               <span style="color:#e2e8f0">Republic Testnet (77701)</span>
             </div>
           </div>
-          <div style="margin-top:14px; padding-top:12px; border-top:1px solid #1f2937;">
+          <div style="margin-top:14px; padding-top:12px; border-top:1px solid #14532d;">
             <a href="${EXPLORER}/address/${evmAddr}" target="_blank"
-               style="color:#6366f1; font-size:0.82rem; text-decoration:none;">
+               style="color:#4ade80; font-size:0.82rem; text-decoration:none;">
               → Block Explorer'da Görüntüle
             </a>
           </div>
